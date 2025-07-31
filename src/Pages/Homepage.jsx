@@ -303,7 +303,7 @@ const HomePage = () => {
                 <ul className="space-y-2">
                   <li><a href="#" className="text-gray-300 hover:text-blue-400">Home</a></li>
                   <li><a href="#" className="text-gray-300 hover:text-blue-400">Search Stays</a></li>
-                  <li><a href="#" className="text-gray-300 hover:text-blue-400">List Your Property</a></li>
+                  <li><a href="#" className="text-gray-300 hover:text-blue-400">List Your Package</a></li>
                   <li><a href="#" className="text-gray-300 hover:text-blue-400">Contact Us</a></li>
                 </ul>
               </div>
