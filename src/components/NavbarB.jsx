@@ -18,7 +18,10 @@ const Navbar = () => {
 
   const handleLinkClick = (e, linkName) => {
     e.preventDefault();
+    console.log("Link", linkName, "clicked");
+    
     setSelectedLink(linkName);
+    navigate("/")
   };
 
   const handleLogout = () => {
@@ -47,8 +50,8 @@ const Navbar = () => {
 
             {/* Right Side: Auth Links or User Avatar */}
             <div className="flex items-center space-x-4">
-              <Link to="/addproperty" className="text-white">
-                List your property
+              <Link to="/addPackage" className="text-white">
+                List your Packages
               </Link>
               
               {user && (
@@ -93,35 +96,35 @@ const Navbar = () => {
           {/* Bottom Navbar: Navigation Links */}
           <div className="flex container px-8 gap-4 py-6 max-w-5xl mx-auto">
             <Link
-              to="/notFound"
+              to="/"
               className={`border-2 border-white px-6 py-2 rounded-full transition-colors ${
-                selectedLink === "Hotels"
+                selectedLink === "Home"
                   ? "bg-white text-[#001A72]"
                   : "text-white"
               }`}
-              onClick={(e) => handleLinkClick(e, "Hotels")}
+              onClick={(e) => handleLinkClick(e, "Home")}
             >
               Home
             </Link>
             <Link
               to="/notFound"
               className={`border-2 border-white px-6 py-2 rounded-full transition-colors ${
-                selectedLink === "Pods"
+                selectedLink === "Trending"
                   ? "bg-white text-[#001A72]"
                   : "text-white"
               }`}
-              onClick={(e) => handleLinkClick(e, "Pods")}
+              onClick={(e) => handleLinkClick(e, "Trending")}
             >
               Trending Countries
             </Link>
             <Link
               to="/notFound"
               className={`border-2 border-white px-6 py-2 rounded-full transition-colors ${
-                selectedLink === "Homestays"
+                selectedLink === "packages"
                   ? "bg-white text-[#001A72]"
                   : "text-white"
               }`}
-              onClick={(e) => handleLinkClick(e, "Homestays")}
+              onClick={(e) => handleLinkClick(e, "packages")}
             >
               Trending packages
             </Link>

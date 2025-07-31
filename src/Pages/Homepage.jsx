@@ -10,12 +10,7 @@ import IndonesiaImg from "../assets/countries/indonesia.png"
 import Navbar from "../components/NavbarB";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import BaliImg from "../assets/Packages/bali.png";
-import DubaiImg from "../assets/Packages/dubai.png";
-import MaldivesImg from "../assets/Packages/maldives.png";
-import SingaporeImg from "../assets/Packages/singapore.png";
-import MalaysiaImg from "../assets/Packages/malaysia.png";
-import ThaiImg from "../assets/Packages/thailand.png";
+
 
 const HomePage = () => {
   const [dateRange, setDateRange] = useState([null, null]);
@@ -30,7 +25,7 @@ const HomePage = () => {
 
   const fetchProperties = async () => {
     try {
-      const response = await fetch('http://localhost:5000/properties/viewAllProperty');
+      const response = await fetch('http://localhost:5000/package/viewAllPackages');
       if (!response.ok) {
         throw new Error('Failed to fetch properties');
       }
@@ -60,78 +55,78 @@ const HomePage = () => {
     }
   ];
 
-  const packagesArray = [
-    {
-      img: BaliImg,
-      owner: "Bali",
-      location: "Bali, Indonesia",
-      price: "$ 2,499",
-      description: "A tropical paradise with stunning beaches and vibrant nightlife.",
-    },
-    {
-      img: ThaiImg,
-      owner: "Thailand",
-      location: "Bangkok, Thailand",
-      price: "$ 699",
-      description: "Experience the rich culture, street food, and temples of Bangkok.",
-    },
-    {
-      img: SingaporeImg,
-      owner: "Singapore",
-      location: "Singapore",
-      price: "$ 1,299",
-      description: "A luxurious stay in a futuristic city with world-class attractions.",
-    },
-    {
-      img: MaldivesImg,
-      owner: "Maldives",
-      location: "Maldives",
-      price: "$ 3,999",
-      description: "Overwater bungalows, crystal-clear waters, and ultimate relaxation.",
-    },
-    {
-      img: DubaiImg,
-      owner: "Dubai",
-      location: "Dubai, UAE",
-      price: "$ 1,999",
-      description: "A luxury escape with breathtaking skyscrapers and desert adventures.",
-    },
-    {
-      img: MalaysiaImg,
-      owner: "Malaysia",
-      location: "Malaysia",
-      price: "$ 1,499",
-      description: "A tropical paradise with stunning beaches and vibrant nightlife.",
-    },
-    {
-      img: ThaiImg,
-      owner: "Thailand",
-      location: "Bangkok, Thailand",
-      price: "$ 699",
-      description: "Experience the rich culture, street food, and temples of Bangkok.",
-    },
-    {
-      img: SingaporeImg,
-      owner: "Singapore",
-      location: "Singapore",
-      price: "$ 1,299",
-      description: "A luxurious stay in a futuristic city with world-class attractions.",
-    },
-    {
-      img: MaldivesImg,
-      owner: "Maldives",
-      location: "Maldives",
-      price: "$ 3,999",
-      description: "Overwater bungalows, crystal-clear waters, and ultimate relaxation.",
-    },
-    {
-      img: DubaiImg,
-      owner: "Dubai",
-      location: "Dubai, UAE",
-      price: "$ 1,999",
-      description: "A luxury escape with breathtaking skyscrapers and desert adventures.",
-    },
-];
+//   const packagesArray = [
+//     {
+//       img: BaliImg,
+//       owner: "Bali",
+//       location: "Bali, Indonesia",
+//       price: "$ 2,499",
+//       description: "A tropical paradise with stunning beaches and vibrant nightlife.",
+//     },
+//     {
+//       img: ThaiImg,
+//       owner: "Thailand",
+//       location: "Bangkok, Thailand",
+//       price: "$ 699",
+//       description: "Experience the rich culture, street food, and temples of Bangkok.",
+//     },
+//     {
+//       img: SingaporeImg,
+//       owner: "Singapore",
+//       location: "Singapore",
+//       price: "$ 1,299",
+//       description: "A luxurious stay in a futuristic city with world-class attractions.",
+//     },
+//     {
+//       img: MaldivesImg,
+//       owner: "Maldives",
+//       location: "Maldives",
+//       price: "$ 3,999",
+//       description: "Overwater bungalows, crystal-clear waters, and ultimate relaxation.",
+//     },
+//     {
+//       img: DubaiImg,
+//       owner: "Dubai",
+//       location: "Dubai, UAE",
+//       price: "$ 1,999",
+//       description: "A luxury escape with breathtaking skyscrapers and desert adventures.",
+//     },
+//     {
+//       img: MalaysiaImg,
+//       owner: "Malaysia",
+//       location: "Malaysia",
+//       price: "$ 1,499",
+//       description: "A tropical paradise with stunning beaches and vibrant nightlife.",
+//     },
+//     {
+//       img: ThaiImg,
+//       owner: "Thailand",
+//       location: "Bangkok, Thailand",
+//       price: "$ 699",
+//       description: "Experience the rich culture, street food, and temples of Bangkok.",
+//     },
+//     {
+//       img: SingaporeImg,
+//       owner: "Singapore",
+//       location: "Singapore",
+//       price: "$ 1,299",
+//       description: "A luxurious stay in a futuristic city with world-class attractions.",
+//     },
+//     {
+//       img: MaldivesImg,
+//       owner: "Maldives",
+//       location: "Maldives",
+//       price: "$ 3,999",
+//       description: "Overwater bungalows, crystal-clear waters, and ultimate relaxation.",
+//     },
+//     {
+//       img: DubaiImg,
+//       owner: "Dubai",
+//       location: "Dubai, UAE",
+//       price: "$ 1,999",
+//       description: "A luxury escape with breathtaking skyscrapers and desert adventures.",
+//     },
+// ];
 
 
   return (
@@ -220,46 +215,18 @@ const HomePage = () => {
             ))}
           </div>
         </section>
-        {/* Trending Packages */}
-        <section className="p-6">
-          <div className="trending-cities flex mx-60 ">
-            <h2 className="text-3xl font-bold mb-4 text-left">
-              Trending Packages
-            </h2>
-          </div>
 
-          <div className="grid grid-cols-3 gap-6 w-fit mx-auto">
-            {packagesArray.map((city, index) => (
-             <div key={index} className="text-left">
-        <Link
-          to={`/booking/${city.owner}`} // assuming `city.owner` is needed in route param
-          state={city}
-        >
-          <img
-            src={city.img}
-            alt="photo"
-            className="rounded-lg w-80 h-48 hover:opacity-90 transition duration-300"
-          />
-          <p className="mt-2 font-bold text-xl">
-            {city.location}
-            <span className="text-gray-500"></span>
-          </p>
-        </Link>
-      </div>
-            ))}
-          </div>
-        </section>
 
-        {/* All Properties */}
+        {/* All Packages */}
         <section className="p-6">
           <div className="all-properties flex align-baseline mx-60">
             <h2 className="text-3xl font-bold mb-4 text-left">
-              All Properties
+              All Packages
             </h2>
           </div>
 
           {loading ? (
-            <div className="text-center py-8">Loading properties...</div>
+            <div className="text-center py-8">Loading packages...</div>
           ) : error ? (
             <div className="text-center text-red-500 py-8">{error}</div>
           ) : (

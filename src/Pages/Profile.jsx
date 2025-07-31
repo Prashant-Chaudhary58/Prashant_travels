@@ -17,18 +17,20 @@ export const Profile = () => {
     navigate("/login");
   };
 
-  const handleDeleteProperty = async (propertyId) => {
-    if (!window.confirm('Are you sure you want to delete this property?')) {
+  const handleDeleteProperty = async (packageId) => {
+    if (!window.confirm("Are you sure you want to delete this package?")) {
       return;
     }
 
     setIsDeleting(true);
     try {
       const token = localStorage.getItem("token");
+      console.log("Deleting package with ID:", packageId);
+
       const response = await fetch(
-        `http://localhost:5000/properties/deleteProperty/${propertyId}`,
+        `http://localhost:5000/package/deletePackage/${packageId}`,
         {
-          method: 'DELETE',
+          method: "DELETE",
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -37,18 +39,18 @@ export const Profile = () => {
       );
 
       if (response.ok) {
-        // Remove property from state
-        setProperties(prevProperties => 
-          prevProperties.filter(property => property.property_id !== propertyId)
+        // Remove package from state
+        setProperties((prevProperties) =>
+          prevProperties.filter((property) => property.package_id !== packageId)
         );
-        alert('Property deleted successfully');
+        alert("Package deleted successfully");
       } else {
         const data = await response.json();
-        throw new Error(data.error || 'Failed to delete property');
+        throw new Error(data.error || "Failed to delete Package");
       }
     } catch (error) {
-      console.error('Delete error:', error);
-      alert('Failed to delete property: ' + error.message);
+      console.error("Delete error:", error);
+      alert("Failed to delete package: " + error.message);
     } finally {
       setIsDeleting(false);
     }
@@ -87,7 +89,7 @@ export const Profile = () => {
 
         // Fetch properties only if profile fetch is successful
         const propertiesResponse = await fetch(
-          "http://localhost:5000/properties/viewAllProperty",
+          "http://localhost:5000/package/viewAllPackages",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -104,7 +106,7 @@ export const Profile = () => {
         // Update the bookings fetch
         try {
           const bookingsResponse = await fetch(
-            'http://localhost:5000/api/bookings/all-bookings',
+            "http://localhost:5000/api/bookings/all-bookings",
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -115,15 +117,17 @@ export const Profile = () => {
 
           if (bookingsResponse.ok) {
             const data = await bookingsResponse.json();
-            console.log('Bookings data:', data); // Debug log
+            console.log("Bookings data:", data); // Debug log
             setBookings(data.bookings || []); // Access the bookings array from the response
           } else {
-            console.error('Failed to fetch bookings:', bookingsResponse.statusText);
+            console.error(
+              "Failed to fetch bookings:",
+              bookingsResponse.statusText
+            );
           }
         } catch (error) {
-          console.error('Error fetching bookings:', error);
+          console.error("Error fetching bookings:", error);
         }
-
       } catch (err) {
         console.error("Fetch error:", err);
         setError(err.message);
@@ -190,42 +194,42 @@ export const Profile = () => {
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-3xl font-bold text-[#001A72]">My Properties</h2>
             <Link
-              to="/addproperty"
+              to="/addPackage"
               className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
             >
-              + Add New Property
+              + Add New Package
             </Link>
           </div>
 
           {loading ? (
-            <div className="text-center py-8">Loading properties...</div>
+            <div className="text-center py-8">Loading packages...</div>
           ) : error ? (
             <div className="text-center text-red-500 py-8">{error}</div>
           ) : userProperties.length === 0 ? (
             <div className="text-center py-8 text-gray-600">
-              You haven't listed any properties yet.
+              You haven't listed any packages yet.
               <Link
-                to="/addproperty"
+                to="/addPackage"
                 className="block mt-4 text-blue-500 hover:text-blue-600"
               >
-                + Add Your First Property
+                + Add Your First package
               </Link>
             </div>
           ) : (
             <div className="grid grid-cols-3 gap-6 w-fit mx-auto">
               {userProperties.map((property) => (
-                <div key={property.property_id} className="text-center">
-                  <Link 
-                    to={`/booking/${property.owner_name}`} 
+                <div key={property.package_id} className="text-center">
+                  <Link
+                    to={`/booking/${property.owner_name || property.owner_id}`}
                     state={{
                       img: property.image[0],
-                      city: property.city,
+                      city: property.city || property.location,
                       location: property.location,
                       description: property.description,
                       price: `Rs. ${property.price}`,
                       title: property.title,
-                      owner: property.owner_name,
-                      facilities: property.facilities
+                      owner: property.owner_name || property.owner_id,
+                      facilities: property.facilities,
                     }}
                     className="block"
                   >
@@ -236,34 +240,65 @@ export const Profile = () => {
                           alt={property.title}
                           className="absolute inset-0 w-full h-full object-cover rounded-lg"
                           onError={(e) => {
-                            console.error('Image failed to load:', property.image[0]);
-                            e.target.src = '/placeholder-image.jpg';
+                            console.error(
+                              "Image failed to load:",
+                              property.image[0]
+                            );
+                            e.target.src = "/placeholder-image.jpg";
                           }}
                           loading="lazy"
                         />
                       ) : (
                         <div className="absolute inset-0 bg-gray-200 rounded-lg flex items-center justify-center">
-                          <span className="text-gray-400">No image available</span>
+                          <span className="text-gray-400">
+                            No image available
+                          </span>
                         </div>
                       )}
                       <button
                         onClick={(e) => {
                           e.preventDefault();
-                          handleDeleteProperty(property.property_id);
+                          handleDeleteProperty(property.package_id);
                         }}
                         disabled={isDeleting}
                         className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition-colors z-10"
                       >
                         {isDeleting ? (
                           <span className="flex items-center">
-                            <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                            <svg
+                              className="animate-spin h-5 w-5"
+                              viewBox="0 0 24 24"
+                            >
+                              <circle
+                                className="opacity-25"
+                                cx="12"
+                                cy="12"
+                                r="10"
+                                stroke="currentColor"
+                                strokeWidth="4"
+                                fill="none"
+                              />
+                              <path
+                                className="opacity-75"
+                                fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                              />
                             </svg>
                           </span>
                         ) : (
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-5 w-5"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                            />
                           </svg>
                         )}
                       </button>
@@ -282,6 +317,7 @@ export const Profile = () => {
                       </div>
                     </div>
                   </Link>
+                  {property.owner_name && <p>Owner: {property.owner_name}</p>}
                 </div>
               ))}
             </div>
@@ -292,20 +328,25 @@ export const Profile = () => {
       {/* Updated Bookings Section */}
       <section className="p-6 bg-white mt-8 rounded-lg shadow">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl font-bold text-[#001A72] mb-6">My Bookings</h2>
-          
+          <h2 className="text-3xl font-bold text-[#001A72] mb-6">
+            My Bookings
+          </h2>
+
           {userBookings.length === 0 ? (
             <div className="text-center py-8 text-gray-600 bg-gray-50 rounded-lg">
               <p>You haven't made any bookings yet.</p>
-              <Link to="/" className="text-blue-500 hover:text-blue-600 mt-2 inline-block">
+              <Link
+                to="/"
+                className="text-blue-500 hover:text-blue-600 mt-2 inline-block"
+              >
                 Browse Properties
               </Link>
             </div>
           ) : (
             <div className="grid gap-4">
               {userBookings.map((booking) => (
-                <div 
-                  key={booking.booking_id} 
+                <div
+                  key={booking.booking_id}
                   className="bg-gray-50 p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow border border-gray-100"
                 >
                   <div className="flex justify-between items-start">
@@ -313,35 +354,40 @@ export const Profile = () => {
                       <h3 className="font-semibold text-lg text-[#001A72]">
                         Booking #{booking.booking_id}
                       </h3>
-                      <p className="text-gray-600 mt-1">Guest: {booking.guest_name}</p>
+                      <p className="text-gray-600 mt-1">
+                        Guest: {booking.guest_name}
+                      </p>
                       <div className="mt-2 space-y-1">
                         <p className="text-gray-600">
-                          <span className="font-medium">Check-in:</span>{' '}
+                          <span className="font-medium">Check-in:</span>{" "}
                           {new Date(booking.check_in).toLocaleDateString()}
                         </p>
                         <p className="text-gray-600">
-                          <span className="font-medium">Check-out:</span>{' '}
+                          <span className="font-medium">Check-out:</span>{" "}
                           {new Date(booking.check_out).toLocaleDateString()}
                         </p>
                         <p className="text-gray-600">
-                          <span className="font-medium">Guests:</span>{' '}
+                          <span className="font-medium">Guests:</span>{" "}
                           {booking.num_guests} people
                         </p>
                       </div>
                     </div>
                     <div className="text-right">
                       <p className="text-xl font-bold text-blue-600">
-                        Rs. {booking.total_price.toLocaleString('en-IN')}
+                        Rs. {booking.total_price.toLocaleString("en-IN")}
                       </p>
                       <p className="text-sm text-gray-500 mt-1">
                         {booking.no_of_nights} nights
                       </p>
-                      <span className={`inline-block px-3 py-1 rounded-full text-sm mt-2 ${
-                        booking.status === 'confirmed' 
-                          ? 'bg-green-100 text-green-800' 
-                          : 'bg-red-100 text-red-800'
-                      }`}>
-                        {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
+                      <span
+                        className={`inline-block px-3 py-1 rounded-full text-sm mt-2 ${
+                          booking.status === "confirmed"
+                            ? "bg-green-100 text-green-800"
+                            : "bg-red-100 text-red-800"
+                        }`}
+                      >
+                        {booking.status.charAt(0).toUpperCase() +
+                          booking.status.slice(1)}
                       </span>
                     </div>
                   </div>
